@@ -2,8 +2,8 @@
   <div id="login">
     <b-container>
         <div class="centerblock">
-            <h1>Drillytical - login page</h1>
-            <p>Your training logging app</p>
+            <h1>Trackit</h1>
+            <p>Track your training</p>
             <b-form id="loginform">
                 <b-input placeholder="Username" />
                 <b-input placeholder="Password" />
@@ -28,7 +28,7 @@ export default {
 </script>
 <style lang="scss">
 body {
-    background: linear-gradient(to bottom right, rgba(73, 73, 73, 0.678)), url('../assets/trainingbg.jpg') no-repeat center center fixed;
+    background: url('../assets/trainingbg.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -36,7 +36,8 @@ body {
 }
 
 .centerblock {
-    margin: 20em auto;
+    margin: 0 auto;
+    margin-top: 20em;
     max-width: 400px;
 }
 
