@@ -2,8 +2,8 @@
   <div id="login">
     <b-container>
         <div class="centerblock">
-            <h1>Trackit</h1>
-            <p>Track your training</p>
+            <h1>Leet Developer</h1>
+            <p>Currently under construction</p>
             <b-form id="loginform">
                 <b-input placeholder="Username" />
                 <b-input placeholder="Password" />
@@ -27,22 +27,10 @@ export default {
 }
 </script>
 <style lang="scss">
-body {
-    background: url('../assets/trainingbg.jpg') no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-}
-
 .centerblock {
     margin: 0 auto;
     margin-top: 20em;
     max-width: 400px;
-}
-
-#login {
-    color: rgba(255, 255, 255, 0.8);
 }
 
 #loginform {
