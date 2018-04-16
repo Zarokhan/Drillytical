@@ -14,12 +14,13 @@
   </div>
 </template>
 <script>
+import env from './env'
 export default {
   name: 'app',
   data: function() {
     return {
       navurls: [
-        ['https://leetdeveloper.se', 'leetdeveloper.se'],
+        [env.GET_CLIENT_URL(), 'leetdeveloper.se'],
         ['http://ts3.leetdeveloper.se', 'ts3.leetdeveloper.se'],
         ['http://cats.leetdeveloper.se', 'cats.leetdeveloper.se'],
         ['https://www.nejmobbning.se', 'nejmobbning.se'],
