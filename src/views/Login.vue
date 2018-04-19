@@ -5,10 +5,10 @@
             <h1>Leet Developer</h1>
             <p>Currently under construction</p>
             <b-form id="loginform">
-                <b-input id="login" placeholder="Username" />
-                <b-input id="password" placeholder="Password" type="password"/>
-                <b-button variant="primary">Login</b-button>
-                <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0">Remember me</b-form-checkbox>
+                <b-input id="login" placeholder="Username" v-model="user" />
+                <b-input id="password" placeholder="Password" type="password" v-model="pass"/>
+                <b-button variant="primary" @click="login">Login</b-button>
+                <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0" v-model="remember">Remember me</b-form-checkbox>
             </b-form>
         </div>
     </b-container>
@@ -16,27 +16,33 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'login',
-  components: {
-    
-  },
   data: function() {
       return {
-
+          user: "",
+          pass: "",
+          remember: false
       }
   },
   methods: {
       login: function() {
-          
+          //console.log(this.user)
+          //console.log(this.pass)
+          //console.log(this.remember)
       }
+  },
+  created(){
+      
   }
 }
 </script>
 <style lang="scss">
 .loginblock {
     margin: 0 auto;
-    margin-top: 20em;
+    margin-top: 2em;
     max-width: 400px;
 }
 

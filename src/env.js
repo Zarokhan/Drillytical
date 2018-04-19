@@ -1,7 +1,7 @@
 export default {
     isDev: true,
     PROD_API: 'https://systembolagetwebapi.azurewebsites.net',
-    DEV_API: 'http://localhost:53573',
+    DEV_API: 'https://localhost:44397',
     PROD_CLIENT: 'https://leetdeveloper.se',
     DEV_CLIENT: 'http://localhost:8080',
     GET_API: function() {

@@ -5,42 +5,14 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import VueAxios from 'vue-axios'
-import VueAuthenticate from 'vue-authenticate'
-import axios from 'axios'
-import env from './env'
+import axios from './myaxios'
 
-axios.defaults.baseURL = env.GET_API()
+console.log(axios.defaults.baseURL)
 
-Vue.use(VueAxios, axios)
-Vue.use(BootstrapVue);
-
-Vue.use(VueAuthenticate, {
-  baseUrl: env.GET_API(), // Your API domain
-  
-  providers: {
-    github: {
-      clientId: '',
-      redirectUri: env.GET_CLIENT_URL() + '/auth/callback' // Your client app URL
-    }
-  }
-})
+Vue.use(BootstrapVue)
 
 new Vue({
   router,
   store,
-  render: h => h(App),
-  methods: {
-    login: function () {
-      this.$auth.login({ email, password }).then(function () {
-        // Execute application logic after successful login
-      })
-    },
-
-    register: function () {
-      this.$auth.register({ name, email, password }).then(function () {
-        // Execute application logic after successful registration
-      })
-    }
-  }
+  render: h => h(App)
 }).$mount('#app')
