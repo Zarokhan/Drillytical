@@ -1,5 +1,5 @@
 <template>
-  <div id="main">
+  <div id="start">
     <b-container>
         <h1>Main panel</h1>
     </b-container>
@@ -8,9 +8,10 @@
 
 <script>
 export default {
-  name: 'main',
-  components: {
-    
+  name: 'start',
+  created() {
+    // TO-DO: Check if is authorized
+    // Maybe use store
   }
 }
 </script>
