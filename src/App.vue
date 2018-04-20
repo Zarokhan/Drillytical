@@ -22,9 +22,7 @@ export default {
       navurls: [
         [env.GET_CLIENT_URL(), 'leetdeveloper.se'],
         ['http://ts3.leetdeveloper.se', 'ts3.leetdeveloper.se'],
-        ['http://cats.leetdeveloper.se', 'cats.leetdeveloper.se'],
-        ['https://www.nejmobbning.se', 'nejmobbning.se'],
-        ['http://lacucina-lund.se', 'lacucina-lund.se']
+        ['http://cats.leetdeveloper.se', 'cats.leetdeveloper.se']
       ]
     }
   }

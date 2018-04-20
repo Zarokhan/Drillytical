@@ -5,9 +5,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import axios from './myaxios'
-
-console.log(axios.defaults.baseURL)
 
 Vue.use(BootstrapVue)
 
