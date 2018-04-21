@@ -1,7 +1,7 @@
 <template>
   <div id="start">
     <b-container>
-        <h1>Main panel</h1>
+        <h1>Authorized</h1>
     </b-container>
   </div>
 </template>
@@ -12,6 +12,12 @@ export default {
   created() {
     // TO-DO: Check if is authorized
     // Maybe use store
+    let _this = this
+    this.$store.dispatch('authorize')
+    .catch(function(error) {
+      console.log(error)
+      _this.$router.push('/')
+    })
   }
 }
 </script>

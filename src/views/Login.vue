@@ -4,7 +4,6 @@
         <div class="loginblock">
             <h1>Leet Developer</h1>
             <p>Currently under construction</p>
-            
             <b-alert :variant="alertType" :show="alertMsg.length != 0">{{ alertMsg }}</b-alert>
             <b-form id="loginform">
                 <b-input id="login" placeholder="Username" v-model="user" />
@@ -12,57 +11,70 @@
                 <b-button type="submit" variant="primary" @click="login">Login</b-button>
                 <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0" v-model="remember">Remember me</b-form-checkbox>
             </b-form>
-            <b-alert :variant="success.info" style="margin-top: 1em;" :show="success.msg.length != 0">{{ success.msg }}</b-alert>
         </div>
     </b-container>
   </div>
 </template>
 
 <script>
-import axios from '../myaxios'
+
 export default {
   name: 'login',
   data: function() {
       return {
           user: "",
           pass: "",
-          remember: false,
+          remember: localStorage.getItem("remember") !== null ? localStorage.getItem("remember") : false,
           alertType: "secondary",
-          alertMsg: "",
-          success: {
-              type: "info",
-              msg: ""
-          }
+          alertMsg: ""
       }
   },
   methods: {
-      login: function(event) {
-            event.preventDefault()
-            let _this = this;
-            let config = {
-                auth: {
-                    username: this.user,
-                    password: this.pass
-                }
+    login: function(event) {
+        event.preventDefault()
+        let _this = this;
+        this.$store.dispatch('authenticate', {
+            username: this.user,
+            password: this.pass
+        })
+        // Authentication successful
+        .then(function(){
+            // check remembered
+            if (_this.remember) {
+                // save 'token' in localstorage
+                localStorage.setItem("remember", true)
+                localStorage.setItem("user", _this.user)
+                localStorage.setItem("pass", _this.pass)
             }
-            axios.get('/api/login', config)
-            .then(function (response) {
-                if (response.status == 200) {
-                    _this.alertType = "primary"
-                    _this.alertMsg = "Login successful"
-                    console.log(response.data)
-                    //_this.$router.push('/start')
-                }
-            })
-            .catch(function (error){
-                console.log(error.message)
-                _this.alertType = "secondary"
-                _this.alertMsg = "False credentials, try again..."
-            })
-      }
+            _this.$router.push('/start')
+        })
+        // Authentication failed
+        .catch(function(){
+            // show error message
+            _this.alertType = "secondary"
+            _this.alertMsg = "False credentials, try again..."
+        })
+    }
   },
   created(){
-      console.log(localStorage)
+    // Check remembered in localstorage
+    let remembered = localStorage.getItem("remember")
+    if (remembered !== null) {
+        // try to automatically login
+        let username = localStorage.getItem("user")
+        let password = localStorage.getItem("pass")
+        // validate
+        if (username !== null && password !== null) {
+            let _this = this;
+            this.$store.dispatch('authenticate', {
+                username: this.username,
+                password: this.password
+            })
+            .then(function(){
+                _this.$router.push('/start')
+            })
+        }
+    }
   }
 }
 </script>
