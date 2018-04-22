@@ -17,7 +17,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'login',
   data: function() {
@@ -57,24 +56,15 @@ export default {
     }
   },
   created(){
-    // Check remembered in localstorage
-    let remembered = localStorage.getItem("remember")
-    if (remembered !== null) {
-        // try to automatically login
-        let username = localStorage.getItem("user")
-        let password = localStorage.getItem("pass")
-        // validate
-        if (username !== null && password !== null) {
-            let _this = this;
-            this.$store.dispatch('authenticate', {
-                username: this.username,
-                password: this.password
-            })
-            .then(function(){
-                _this.$router.push('/start')
-            })
-        }
-    }
+    // Authenticate user
+    let _this = this
+    this.$store.dispatch('authorize')
+    .then(function(){
+        _this.$router.push('/start')
+    })
+    .catch(function() {
+        _this.$router.push('/')
+    })
   }
 }
 </script>

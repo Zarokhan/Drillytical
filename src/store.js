@@ -27,9 +27,37 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    signout ({commit}) {
+      return new Promise((resolve, reject) => {
+        // clean store and localstorage of credentials
+        let cred = {
+          username: "",
+          password: ""
+        }
+        localStorage.setItem("user", null)
+        localStorage.setItem("pass", null)
+        localStorage.setItem("remember", null)
+        commit('setCredentials', cred)
+        resolve("signout")
+        reject()
+      })
+    },
     authorize ({ dispatch, getters }) {
       return new Promise((resolve, reject) => {
+        // try to automatically login
         let cred = getters.getCredentials
+        if (cred.username == "" || cred.password == "") {
+          // check localstorage
+          let username = localStorage.getItem("user")
+          let password = localStorage.getItem("pass")
+          // validate
+          if (username != null && password != null) {
+            cred = {
+              username: username,
+              password: password
+            }
+          }
+        }
         dispatch('authenticate', {
           username: cred.username,
           password: cred.password
@@ -39,10 +67,6 @@ export default new Vuex.Store({
           resolve(response)
         })
         .catch(function(error) {
-          dispatch('authenticate', {
-            username: "",
-            password: ""
-          })
           localStorage.setItem('user', null)
           localStorage.setItem('pass', null)
           reject(error)
