@@ -5,33 +5,40 @@
             <h1>Leet Developer</h1>
             <p>Currently under construction</p>
             <b-alert :variant="alertType" :show="alertMsg.length != 0">{{ alertMsg }}</b-alert>
-            <b-form id="loginform">
+            <b-form v-if="!loading" id="loginform">
                 <b-input id="login" placeholder="Username" v-model="user" />
                 <b-input id="password" placeholder="Password" type="password" v-model="pass"/>
                 <b-button type="submit" variant="primary" @click="login">Login</b-button>
                 <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0" v-model="remember">Remember me</b-form-checkbox>
             </b-form>
+            <spinner v-else />
         </div>
     </b-container>
   </div>
 </template>
 
 <script>
+import spinner from "../components/Spinner.vue"
 export default {
   name: 'login',
+  components: {
+      spinner
+  },
   data: function() {
       return {
           user: "",
           pass: "",
           remember: localStorage.getItem("remember") !== null ? localStorage.getItem("remember") : false,
           alertType: "secondary",
-          alertMsg: ""
+          alertMsg: "",
+          loading: false
       }
   },
   methods: {
     login: function(event) {
         event.preventDefault()
         let _this = this;
+        this.loading = true
         this.$store.dispatch('authenticate', {
             username: this.user,
             password: this.pass
@@ -45,10 +52,12 @@ export default {
                 localStorage.setItem("user", _this.user)
                 localStorage.setItem("pass", _this.pass)
             }
-            _this.$router.push('/start')
+            _this.loading = false
+            _this.$router.push('/overview')
         })
         // Authentication failed
         .catch(function(){
+            _this.loading = false
             // show error message
             _this.alertType = "secondary"
             _this.alertMsg = "False credentials, try again..."
@@ -58,11 +67,14 @@ export default {
   created(){
     // Authenticate user
     let _this = this
+    this.loading = true
     this.$store.dispatch('authorize')
     .then(function(){
-        _this.$router.push('/start')
+        _this.loading = false
+        _this.$router.push('/overview')
     })
     .catch(function() {
+        _this.loading = false
         _this.$router.push('/')
     })
   }

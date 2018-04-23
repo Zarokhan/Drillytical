@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './views/Login.vue'
-import Start from './views/Start.vue'
+import Overview from './views/Overview.vue'
 
 Vue.use(Router)
 
@@ -13,9 +13,9 @@ export default new Router({
       component: Login
     },
     {
-      path: '/start',
-      name: 'start',
-      component: Start
+      path: '/overview',
+      name: 'overview',
+      component: Overview
     }
   ]
 })

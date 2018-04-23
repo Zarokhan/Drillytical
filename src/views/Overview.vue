@@ -1,5 +1,5 @@
 <template>
-  <div id="start">
+  <div id="overview">
     <b-container>
         <h1>Authorized</h1>
         <b-button @click="signout">Sign out</b-button>
@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'start',
+  name: 'overview',
   methods: {
     signout: function(event) {
       event.preventDefault()
