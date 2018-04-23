@@ -19,6 +19,7 @@
 
 <script>
 import spinner from "../components/Spinner.vue"
+import env from "../env"
 export default {
   name: 'login',
   components: {
@@ -43,8 +44,8 @@ export default {
             username: this.user,
             password: this.pass
         })
-        // Authentication successful
         .then(function(){
+            // Authentication successful
             // check remembered
             if (_this.remember) {
                 // save 'token' in localstorage
@@ -55,8 +56,8 @@ export default {
             _this.loading = false
             _this.$router.push('/overview')
         })
-        // Authentication failed
         .catch(function(){
+            // Authentication failed
             _this.loading = false
             // show error message
             _this.alertType = "secondary"
@@ -65,6 +66,11 @@ export default {
     }
   },
   created(){
+    // DEV USER
+    if (env.IS_DEV()) {
+        this.user = "Stretch"
+        this.pass = "stretch"
+    }
     // Authenticate user
     let _this = this
     this.loading = true

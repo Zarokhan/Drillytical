@@ -10,11 +10,28 @@ export default new Vuex.Store({
     credentials: {
       username: "",
       password: ""
-    }
+    },
+    loggedin: false,
+    user: null
   },
   getters: {
     getCredentials: (state) => {
       return state.credentials
+    },
+    getAuthConfig: (state) => {
+      let config = {
+        auth: {
+          username: state.credentials.username,
+          password: state.credentials.password
+        }
+      }
+      return config
+    },
+    getLoggedin: (state) => {
+      return state.loggedin
+    },
+    getUser: (state) => {
+      return state.user
     }
   },
   mutations: {
@@ -24,12 +41,22 @@ export default new Vuex.Store({
     setCredentials (state, { username, password }) {
       state.credentials.username = username
       state.credentials.password = password
+    },
+    setUser (state, user) {
+      state.user = user
+    },
+    signout (state) {
+      state.loggedin = false
+    },
+    signin (state) {
+      state.loggedin = true
     }
   },
   actions: {
     signout ({commit}) {
       return new Promise((resolve, reject) => {
         // clean store and localstorage of credentials
+        console.log(this.$router)
         let cred = {
           username: "",
           password: ""
@@ -38,11 +65,12 @@ export default new Vuex.Store({
         localStorage.setItem("pass", null)
         localStorage.setItem("remember", null)
         commit('setCredentials', cred)
+        commit('signout')
         resolve("signout")
         reject()
       })
     },
-    authorize ({ dispatch, getters }) {
+    authorize ({ commit, dispatch, getters }) {
       return new Promise((resolve, reject) => {
         // try to automatically login
         let cred = getters.getCredentials
@@ -64,9 +92,11 @@ export default new Vuex.Store({
         })
         .then(function(response) {
           //response.msg = "Authorize successful"
+          commit('signin')
           resolve(response)
         })
         .catch(function(error) {
+          commit('signout')
           localStorage.setItem('user', null)
           localStorage.setItem('pass', null)
           reject(error)
@@ -87,7 +117,8 @@ export default new Vuex.Store({
             // save credentials in state store
             let cred = { username: config.auth.username, password: config.auth.password }
             commit('setCredentials', cred)
-
+            commit('signin')
+            commit('setUser', response.data)
             resolve({
               status: response.status,
               data: response.data,
@@ -98,6 +129,7 @@ export default new Vuex.Store({
           }
         })
         .catch(function (error){
+          commit('signout')
           console.log(error.message)
           reject({
             error: error.message

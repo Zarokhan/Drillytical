@@ -10,5 +10,8 @@ export default {
     GET_CLIENT_URL: function() {
         let client = process.env.NODE_ENV === "development" ? this.DEV_CLIENT : this.PROD_CLIENT
         return client
+    },
+    IS_DEV: function() {
+        return process.env.NODE_ENV === "development" ? true : false
     }
 }
