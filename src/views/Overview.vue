@@ -4,21 +4,32 @@
       <h1>Overview - Exercise Groups</h1>
       <b-row style="margin-bottom: 1em;">
         <b-col md="10">
-          <b-input id="groupinput" v-model="groupinput" style="width: 100%;"/>
+          <b-input id="newGroupInput" v-model="newGroupInput" style="width: 100%;"/>
         </b-col>
         <b-col md="2">
           <b-button variant="primary" cols="2" @click="addGroup" style="width: 100%;">Add</b-button>
         </b-col>
       </b-row>
       <b-alert :variant="info.type" :show="info.msg.length != 0">{{ info.msg }}</b-alert>
-      <b-card v-for="g in groups" :key="g.Id">
+      <b-card v-for="g in groups" :key="g.key">
         <div class="card-header">
-          <h3 style="float:left;">{{g.Name}}</h3>
-          <b-button-group style="float:right;">
-            <b-button variant="outline-secondary">Edit</b-button>
-            <b-button variant="danger" @click="deleteGroup(g.Id)">Delete</b-button>
-          </b-button-group>
-          <span class="clear:both;" />
+          <b-row>
+            <b-col md="9">
+              <h3 v-if="!g.edit" style="float:left;">{{g.Name}}</h3>
+              <b-input v-else id="editGroupNameInput" v-model="g.editinput"/>
+            </b-col>
+            <b-col md="3">
+              <b-button-group v-if="!g.edit" style="float:right;">
+                <b-button variant="outline-secondary" @click="toggleEditGroup(g.Id)">Edit</b-button>
+                <b-button variant="danger" @click="deleteGroup(g.Id)">Delete</b-button>
+              </b-button-group>
+              <b-button-group v-else style="float:right;">
+                <b-button variant="outline-secondary" @click="toggleEditGroup(g.Id)">Cancel</b-button>
+                <b-button variant="primary" @click="$store.dispatch('saveGroup', [g])">Save</b-button>
+              </b-button-group>
+            </b-col>
+            <span class="clear:both;" />
+          </b-row>
         </div>
         <table class="table">
           <thead>
@@ -56,14 +67,18 @@ export default {
   },
   data: function() {
     return {
-      groups: [],
       groupVerb: "",
-      groupinput: "",
+      newGroupInput: "",
       loading: true,
       info: {
         msg: "",
         type: "warning"
       }
+    }
+  },
+  computed: {
+    groups: function() {
+      return this.$store.getters.getGroups
     }
   },
   methods: {
@@ -84,33 +99,25 @@ export default {
       if (sec == 0) { return min + " m"}
       return min + " m, " + sec + " s"
     },
+    saveEditGroup: function() {
+
+    },
+    toggleEditGroup: function(id) {
+      this.$store.commit('toggleEdit', id)
+    },
     deleteGroup: function(id) {
       if(confirm("Are you sure?")) {
-        this.groups = this.groups.filter(g => g.Id != id)
-        axios.delete('/api/exercisegroup/' + id, this.$store.getters.getAuthConfig)
-        .catch(function(error){
-          console.log(error)
-        })
+        // dispatch
+        this.$store.dispatch('deleteGroup', [id])
       }
     },
     addGroup: function(event) {
       event.preventDefault()
-      if (this.groupinput.length < 2) {
+      if (this.newGroupInput.length < 2) {
         this.info.msg = "Need more than 2 characters to name an exercise group."
         return
       }
-      let _this = this
-      axios.post('/api/exercisegroup', {
-        Exercises: [],
-        Name: this.groupinput
-      }, this.$store.getters.getAuthConfig)
-      .then(function(response){
-        _this.groupinput = ""
-        _this.groups.push(response.data)
-      })
-      .catch(function(error){
-        console.log(error)
-      })
+      this.$store.dispatch('addGroup', [this.newGroupInput])
     },
     signout: function(event) {
       event.preventDefault()
@@ -131,9 +138,13 @@ export default {
       _this.loading = true
       axios.get('/api/exercisegroup', _this.$store.getters.getAuthConfig)
       .then(function(response){
-        _this.groups = response.data
+        let groups = response.data
         _this.loading = false
-        console.log(_this.groups)
+        groups.forEach(function(x){
+          x.edit = false
+          x.editinput = ""
+        })
+        _this.$store.commit('setGroups', groups)
       })
     })
     .catch(function(error) {

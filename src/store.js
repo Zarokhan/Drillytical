@@ -6,6 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    groups: [],
     authorizationRequestCount: 0,
     credentials: {
       username: "",
@@ -15,6 +16,9 @@ export default new Vuex.Store({
     user: null
   },
   getters: {
+    getGroups: (state) => {
+      return state.groups
+    },
     getCredentials: (state) => {
       return state.credentials
     },
@@ -35,6 +39,24 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    addGroup (state, group) {
+      state.groups.push(group)
+    },
+    deleteGroupById(state, id) {
+      state.groups = state.groups.filter(g => g.Id != id)
+    },
+    toggleEdit(state, id) {
+      let group = state.groups.filter(g => g.Id == id)[0]
+      group.editinput = group.Name
+      group.edit = !group.edit
+    },
+    saveGroup (state, group) {
+      let refGroup = state.groups[state.groups.indexOf(group)]
+      refGroup.Name = group.Name
+    },
+    setGroups (state, groups) {
+      state.groups = groups
+    },
     incrementAuthenticate (state) {
       state.authorizationRequestCount++
     },
@@ -53,10 +75,41 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    saveGroup ({commit, getters}, [group]) {
+      axios.put('/api/exercisegroup', group, getters.getAuthConfig)
+      .then(function(response){
+        commit('saveGroup', group)
+        commit('toggleEdit', group.Id)
+        console.log(response)
+      })
+      .catch(function(error){
+        console.log(error.response)
+      })
+    },
+    addGroup ({commit, getters}, [ name ]) {
+      axios.post('/api/exercisegroup', {
+        Exercises: [],
+        Name: name
+      }, getters.getAuthConfig)
+      .then(function(response){
+        commit('addGroup', response.data)
+      })
+      .catch(function(error){
+        console.log(error)
+      })
+    },
+    deleteGroup({commit, getters}, [ id ]) {
+      axios.delete('/api/exercisegroup/' + id, getters.getAuthConfig)
+      .then(function(){
+        commit('deleteGroupById', id)
+      })
+      .catch(function(error){
+        console.log(error)
+      })
+    },
     signout ({commit}) {
       return new Promise((resolve, reject) => {
         // clean store and localstorage of credentials
-        console.log(this.$router)
         let cred = {
           username: "",
           password: ""
