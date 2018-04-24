@@ -76,6 +76,10 @@ $black: rgb(24, 24, 24);
   color: $black;
 }
 
+a:hover {
+  text-decoration: none;
+}
+
 .navbar {
   margin-bottom: 1em;
 }
