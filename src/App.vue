@@ -5,7 +5,7 @@
       <b-navbar-brand href="/">LeetDev</b-navbar-brand>
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav>
-          <b-nav-item to="/overview">Overview</b-nav-item>
+          <b-nav-item to="/workout">Workout</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->

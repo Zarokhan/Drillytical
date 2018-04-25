@@ -76,14 +76,11 @@ export default new Vuex.Store({
   },
   actions: {
     saveGroup ({commit, getters}, [group]) {
-      axios.put('/api/exercisegroup', group, getters.getAuthConfig)
-      .then(function(response){
+      group.Name = group.editinput
+      axios.put('/api/exercisegroup/' + group.Id, group, getters.getAuthConfig)
+      .then(function(){
         commit('saveGroup', group)
         commit('toggleEdit', group.Id)
-        console.log(response)
-      })
-      .catch(function(error){
-        console.log(error.response)
       })
     },
     addGroup ({commit, getters}, [ name ]) {
@@ -94,17 +91,11 @@ export default new Vuex.Store({
       .then(function(response){
         commit('addGroup', response.data)
       })
-      .catch(function(error){
-        console.log(error)
-      })
     },
     deleteGroup({commit, getters}, [ id ]) {
       axios.delete('/api/exercisegroup/' + id, getters.getAuthConfig)
       .then(function(){
         commit('deleteGroupById', id)
-      })
-      .catch(function(error){
-        console.log(error)
       })
     },
     signout ({commit}) {
@@ -183,7 +174,6 @@ export default new Vuex.Store({
         })
         .catch(function (error){
           commit('signout')
-          console.log(error.message)
           reject({
             error: error.message
           })

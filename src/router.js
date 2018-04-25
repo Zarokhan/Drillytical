@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './views/Login.vue'
-import Overview from './views/Overview.vue'
+import Workout from './views/Workout.vue'
 import Profile from './views/Profile'
 
 Vue.use(Router)
@@ -14,9 +14,9 @@ export default new Router({
       component: Login
     },
     {
-      path: '/overview',
-      name: 'overview',
-      component: Overview
+      path: '/workout',
+      name: 'workout',
+      component: Workout
     },
     {
       path: '/profile',

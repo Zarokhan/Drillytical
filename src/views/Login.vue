@@ -54,7 +54,7 @@ export default {
                 localStorage.setItem("pass", _this.pass)
             }
             _this.loading = false
-            _this.$router.push('/overview')
+            _this.$router.push('/workout')
         })
         .catch(function(){
             // Authentication failed
@@ -77,7 +77,7 @@ export default {
     this.$store.dispatch('authorize')
     .then(function(){
         _this.loading = false
-        _this.$router.push('/overview')
+        _this.$router.push('/workout')
     })
     .catch(function() {
         _this.loading = false
