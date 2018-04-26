@@ -39,6 +39,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    addExercise (state, exercise) {
+      state.groups.filter(g => g.Id == exercise.GroupId)[0].Exercises.push(exercise)
+    },
     addGroup (state, group) {
       state.groups.push(group)
     },
@@ -75,6 +78,22 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    addExercise ({commit, getters}, [ exercise ]) {
+      return new Promise((resolve, reject) => {
+        axios.post('/api/exercise', exercise, getters.getAuthConfig)
+        .then(function(response){
+          if (response.status == 201) {
+            commit('addExercise', response.data)
+            resolve()
+          } else {
+            reject()
+          }
+        })
+        .catch(function(){
+          reject()
+        })
+      })
+    },
     saveGroup ({commit, getters}, [group]) {
       group.Name = group.editinput
       axios.put('/api/exercisegroup/' + group.Id, group, getters.getAuthConfig)
