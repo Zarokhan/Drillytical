@@ -45,6 +45,11 @@ export default new Vuex.Store({
     addGroup (state, group) {
       state.groups.push(group)
     },
+    deleteExerciseById(state, [exerciseId, groupId]) {
+      let group = state.groups.filter(g => g.Id == groupId)[0]
+      let exercises = group.Exercises.filter(e => e.Id != exerciseId)
+      group.Exercises = exercises
+    },
     deleteGroupById(state, id) {
       state.groups = state.groups.filter(g => g.Id != id)
     },
@@ -78,6 +83,12 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    deleteExercise({commit, getters}, [ exerciseId, groupId ]) {
+      axios.delete('/api/exercise/' + exerciseId, getters.getAuthConfig)
+      .then(function(){
+        commit('deleteExerciseById', [exerciseId, groupId])
+      })
+    },
     addExercise ({commit, getters}, [ exercise ]) {
       return new Promise((resolve, reject) => {
         axios.post('/api/exercise', exercise, getters.getAuthConfig)

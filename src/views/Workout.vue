@@ -7,8 +7,8 @@
           <h1>Workout Overview</h1>
         </b-col>
         <b-col sm="3" style="margin-bottom: 1em;">
-          <b-button v-if="!editMode" variant="primary" @click="editMode = !editMode">Edit Mode</b-button>
-          <b-button v-else variant="outline-primary" @click="editMode = !editMode">Cancel Edit</b-button>
+          <b-button v-if="!editMode" variant="primary" @click="toggleEdit()">Edit Mode</b-button>
+          <b-button v-else variant="outline-primary" @click="toggleEdit()">Cancel Edit</b-button>
         </b-col>
       </b-row>
       <!-- Add Exercise Group -->
@@ -52,6 +52,7 @@
         <!-- Exercises Table -->
         <table class="table">
           <thead>
+            <!-- Add Exercise -->
             <tr v-if="g.edit">
               <th colspan="4">
                 <h4>Add Exercise</h4>
@@ -94,6 +95,7 @@
                 </b-row>
               </th>
             </tr>
+            <!-- Exercise table header column text -->
             <tr>
               <th>Exercise</th>
               <th><span v-b-popover.hover.top="'Sets of repetitions'">Sets</span></th>
@@ -102,18 +104,65 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="e in g.Exercises" :key="e.Id">
+            <tr v-for="e in g.Exercises" :key="e.Id" v-if="!e.edit">
               <td>
                 <span v-html="exerciseNameFormat(e)"></span><br>
                 <span v-show="e.Note != null && e.Note.length != 0">{{e.Note}}</span>
                 <b-btn-group v-if="g.edit">
-                  <b-button variant="danger" size="sm" disabled>Delete</b-button>
-                  <b-button variant="primary" size="sm" disabled>Edit</b-button>
+                  <b-button variant="danger" size="sm" @click="$store.dispatch('deleteExercise', [e.Id, g.Id])">Delete</b-button>
+                  <b-button variant="primary" size="sm" @click="e.edit = !e.edit">Edit</b-button>
                 </b-btn-group>
               </td>
               <td>{{e.Sets}}</td>
               <td>{{repsFormat(e)}}</td>
               <td>{{restTimeFormat(e.Rest)}}</td>
+            </tr>
+            <tr v-else>
+              <th colspan="4">
+                <h4>Edit Exercise</h4>
+                <b-row style="margin-bottom: 0.5em;">
+                  <b-col sm="6" style="margin-bottom: 0.5em;">
+                    <b-input id="inputexercisename" aria-describedby="inputExerciseHelp" v-model="e.Name" />
+                    <b-form-text id="inputExerciseHelp">Exercise Name *</b-form-text>
+                  </b-col>
+                  <b-col sm="6">
+                    <b-form-textarea id="inputexercisenote" rows="2"  aria-describedby="inputNoteHelp" v-model="e.Note" />
+                    <b-form-text id="inputNoteHelp">Note</b-form-text>
+                  </b-col>
+                </b-row>
+                <b-row style="margin-bottom: 0.5em;">
+                  <b-col>
+                    <b-input id="inputexercisesets" type="number" aria-describedby="exerciseSetsHelp" v-model="e.Sets" />
+                    <b-form-text id="exerciseSetsHelp">Sets</b-form-text>
+                  </b-col>
+                  <b-col>
+                    <b-input id="inputexerciseminreps" type="number" aria-describedby="exerciseMinRepsHelp" v-model="e.MinReps" />
+                    <b-form-text id="exerciseMinRepsHelp">Reps (Minimum)</b-form-text>
+                  </b-col>
+                  <b-col>
+                    <b-input id="inputexercisemanreps" type="number" aria-describedby="exerciseManRepsHelp" v-model="e.MaxReps" />
+                    <b-form-text id="exerciseManRepsHelp">Reps (Maximum)</b-form-text>
+                  </b-col>
+                </b-row>
+                <b-row style="margin-bottom: 0.5em;">
+                  <b-col cols="4">
+                    <b-input id="inputexerciserest" type="number" aria-describedby="exerciseRestHelp" v-model="e.Rest" />
+                    <b-form-text id="exerciseRestHelp">Rest between sets (seconds)</b-form-text>
+                  </b-col>
+                  <b-col cols="4">
+                    <b-input id="inputexerciselink" aria-describedby="exerciseLinkHelp" v-model="e.WebLink" />
+                    <b-form-text id="exerciseLinkHelp">Paste url of exercise</b-form-text>
+                  </b-col>
+                </b-row>
+                <b-row style="margin-bottom: 0.5em;">
+                  <b-col cols="4">
+                    <b-button variant="primary" disabled>Save</b-button>
+                  </b-col>
+                  <b-col cols="4">
+                    <b-button variant="secondary" @click="e.edit=false">Cancel</b-button>
+                  </b-col>
+                </b-row>
+              </th>
             </tr>
           </tbody>
         </table>
@@ -175,6 +224,15 @@ export default {
         group.newExercise.WebLink = ""
       })
     },
+    toggleEdit: function() {
+      this.editMode = !this.editMode
+      if (!this.editMode) {
+        this.groups.forEach(function(g){
+          g.edit = false
+          g.editinput = ""
+        })
+      }
+    },
     toggleEditGroup: function(id) {
       this.$store.commit('toggleEdit', id)
     },
@@ -230,6 +288,9 @@ export default {
             WebLink: "",
             GroupId: x.Id
           }
+          x.Exercises.forEach(function(e){
+            e.edit = false
+          })
         })
         _this.$store.commit('setGroups', groups)
       })
