@@ -130,7 +130,7 @@
             </b-row>
             <b-row style="margin-bottom: 0.5em;">
               <b-col cols="4">
-                <b-button variant="primary" @click="$store.dispatch('saveExercise', [e, g])" :disabled="e.Name < 3">Save</b-button>
+                <b-button variant="primary" @click="$store.dispatch('saveExercise', [e])" :disabled="e.Name < 3">Save</b-button>
               </b-col>
               <b-col cols="4">
                 <b-button variant="secondary" @click="e.edit=false">Cancel</b-button>
