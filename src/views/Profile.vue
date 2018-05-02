@@ -31,8 +31,7 @@ export default {
     // Authenticate user
     let _this = this
     this.$store.dispatch('authorize')
-    .catch(function(error) {
-      console.log(error)
+    .catch(function() {
       _this.$router.push('/')
     })
   }

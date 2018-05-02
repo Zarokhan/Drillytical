@@ -30,7 +30,6 @@
           <exercisegroup :group="g" :editMode="editMode" :info="info"/>
         </b-col>
       </b-row>
-      
     </b-container>
     <spinner v-else />
   </div>
@@ -111,8 +110,7 @@ export default {
         _this.$store.commit('setGroups', groups)
       })
     })
-    .catch(function(error) {
-      console.log(error)
+    .catch(function() {
       _this.$router.push('/')
     })
   }

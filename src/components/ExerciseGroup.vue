@@ -87,7 +87,7 @@
               <b-button variant="primary" size="sm" @click="toggleExerciseEdit(e)">Edit</b-button>
             </b-btn-group>
           </td>
-          <td>{{e.Sets}}</td>
+          <td>{{setsFormat(e)}}</td>
           <td>{{repsFormat(e)}}</td>
           <td>{{restTimeFormat(e.Rest)}}</td>
         </tr>
@@ -144,6 +144,8 @@
 </template>
 
 <script>
+import exerciseValidation from '../exercisevalidation'
+
 export default {
   name: 'exercisegroup',
   props: {
@@ -155,6 +157,10 @@ export default {
     exerciseNameFormat: function(exercise) {
       if (!exercise.WebLink) { return exercise.Name }
       return "<a href='" + exercise.WebLink + "'>" + exercise.Name + "</a>"
+    },
+    setsFormat: function(exercise) {
+      if (exercise.Sets == 0) { return "" }
+      return exercise.Sets
     },
     repsFormat: function(exercise) {
       if (exercise.MinReps == 0) { return "" }
@@ -179,7 +185,6 @@ export default {
     },
     toggleExerciseEdit: function(exercise) {
       exercise.edit = !exercise.edit
-      console.log(exercise)
     },
     deleteGroup: function(id) {
       if(confirm("Are you sure?")) {
@@ -189,7 +194,7 @@ export default {
       this.info.msg = ""
     },
     addExercise: function(group) {
-      // Check name length
+      exerciseValidation(group.newExercise)
       this.$store.dispatch("addExercise", [ group.newExercise ])
       .then(function(){
         // Clear

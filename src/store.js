@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from './myaxios'
 import groupformatter from './groupformatter'
+import exerciseValidation from './exercisevalidation'
 
 Vue.use(Vuex)
 
@@ -90,6 +91,7 @@ export default new Vuex.Store({
   },
   actions: {
     saveExercise({commit, getters}, [exercise]) {
+      exerciseValidation(exercise)
       axios.put('/api/exercise/' + exercise.Id, exercise, getters.getAuthConfig)
       .then(function(response){
         if (response.status == 204) {
