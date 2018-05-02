@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from './myaxios'
+import groupformatter from './groupformatter'
 
 Vue.use(Vuex)
 
@@ -39,6 +40,11 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    saveExercise (state, exercise) {
+      let exer = state.groups.filter(g => g.Id == exercise.GroupId)[0].Exercises.filter(e => e.Id == exercise.Id)[0]
+      exer = exercise
+      exer.edit = false
+    },
     addExercise (state, exercise) {
       state.groups.filter(g => g.Id == exercise.GroupId)[0].Exercises.push(exercise)
     },
@@ -83,7 +89,17 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    saveExercise({commit, getters}, [exercise]) {
+      axios.put('/api/exercise/' + exercise.Id, exercise, getters.getAuthConfig)
+      .then(function(response){
+        if (response.status == 204) {
+          commit('saveExercise', exercise)
+        }
+      })
+    },
     deleteExercise({commit, getters}, [ exerciseId, groupId ]) {
+      if (!confirm("Are you sure?")) { return }
+
       axios.delete('/api/exercise/' + exerciseId, getters.getAuthConfig)
       .then(function(){
         commit('deleteExerciseById', [exerciseId, groupId])
@@ -94,7 +110,9 @@ export default new Vuex.Store({
         axios.post('/api/exercise', exercise, getters.getAuthConfig)
         .then(function(response){
           if (response.status == 201) {
-            commit('addExercise', response.data)
+            let exercise = response.data
+            exercise.edit = false
+            commit('addExercise', exercise)
             resolve()
           } else {
             reject()
@@ -119,7 +137,7 @@ export default new Vuex.Store({
         Name: name
       }, getters.getAuthConfig)
       .then(function(response){
-        commit('addGroup', response.data)
+        commit('addGroup', groupformatter(response.data))
       })
     },
     deleteGroup({commit, getters}, [ id ]) {
