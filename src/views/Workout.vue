@@ -122,9 +122,9 @@ export default {
 <style lang="scss">
 body {
   background:     linear-gradient(
-      rgba(255, 255, 255, 0.65), 
-      rgba(255, 255, 255, 0.2)
-    ),url("../assets/trainingbg.jpg") no-repeat center center fixed;
+      rgba(255, 255, 255, 0.90), 
+      rgba(255, 255, 255, 0.0)
+    ) no-repeat, url("../assets/trainingbg.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

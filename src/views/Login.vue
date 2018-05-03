@@ -106,4 +106,7 @@ export default {
         margin-right: 0.5em;
     }
 }
+body {
+  background: white;
+}
 </style>

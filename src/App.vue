@@ -83,4 +83,8 @@ a:hover {
 .navbar {
   margin-bottom: 1em;
 }
+
+body {
+  background: white;
+}
 </style>
