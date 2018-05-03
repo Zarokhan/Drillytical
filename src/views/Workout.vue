@@ -109,6 +109,9 @@ export default {
         })
         _this.$store.commit('setGroups', groups)
       })
+      .catch(function(error){
+        console.log(error.response)
+      })
     })
     .catch(function() {
       _this.$router.push('/')
@@ -117,6 +120,17 @@ export default {
 }
 </script>
 <style lang="scss">
+body {
+  background:     linear-gradient(
+      rgba(255, 255, 255, 0.65), 
+      rgba(255, 255, 255, 0.2)
+    ),url("../assets/trainingbg.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
 button, .btn-group {
   width: 100%;
 }

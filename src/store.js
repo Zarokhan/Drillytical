@@ -90,6 +90,40 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    moveExerciseUp({getters}, [exerciseId, groupId]) {
+      const groups = getters.getGroups;
+      const group = groups.filter(g => g.Id == groupId)[0];
+      const exercise1 = group.Exercises.filter(e => e.Id == exerciseId)[0]
+      const indexOf1 = group.Exercises.indexOf(exercise1)
+      const exercise2 = group.Exercises[indexOf1-1]
+      axios.put('api/exercise/'+exercise1.Id+'/'+exercise2.Id, null, getters.getAuthConfig)
+      .then(function(){
+        // Switch Id properties
+        const tempId = exercise1.Id
+        exercise1.Id = exercise2.Id
+        exercise2.Id = tempId
+        // Switch index in array
+        group.Exercises[indexOf1] = exercise2
+        group.Exercises[indexOf1-1] = exercise1
+      })
+    },
+    moveExerciseDown({getters}, [exerciseId, groupId]) {
+      const groups = getters.getGroups;
+      const group = groups.filter(g => g.Id == groupId)[0];
+      const exercise1 = group.Exercises.filter(e => e.Id == exerciseId)[0]
+      const indexOf1 = group.Exercises.indexOf(exercise1)
+      const exercise2 = group.Exercises[indexOf1+1]
+      axios.put('api/exercise/'+exercise1.Id+'/'+exercise2.Id, null, getters.getAuthConfig)
+      .then(function(){
+        // Switch Id properties
+        const tempId = exercise1.Id
+        exercise1.Id = exercise2.Id
+        exercise2.Id = tempId
+        // Switch index in array
+        group.Exercises[indexOf1] = exercise2
+        group.Exercises[indexOf1+1] = exercise1
+      })
+    },
     saveExercise({commit, getters}, [exercise]) {
       exerciseValidation(exercise)
       axios.put('/api/exercise/' + exercise.Id, exercise, getters.getAuthConfig)

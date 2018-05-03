@@ -82,10 +82,21 @@
           <td>
             <span v-html="exerciseNameFormat(e)"></span><br>
             <span v-show="e.Note != null && e.Note.length != 0">{{e.Note}}</span>
-            <b-btn-group v-if="g.edit">
-              <b-button variant="danger" size="sm" @click="$store.dispatch('deleteExercise', [e.Id, g.Id])">Delete</b-button>
-              <b-button variant="primary" size="sm" @click="toggleExerciseEdit(e)">Edit</b-button>
-            </b-btn-group>
+            <b-row style="margin-top: 0.5em;" v-if="g.edit">
+              <b-col>
+                <!-- Exercise Actions -->
+                <span>Actions</span>
+                <b-btn-group style="margin-bottom: 0.5em;">
+                  <b-button variant="danger" size="sm" @click="$store.dispatch('deleteExercise', [e.Id, g.Id])">Delete</b-button>
+                  <b-button variant="primary" size="sm" @click="toggleExerciseEdit(e)">Edit</b-button>
+                </b-btn-group>
+                <span>Move</span>
+                <b-btn-group  >
+                  <b-button variant="secondary" size="sm" @click="$store.dispatch('moveExerciseUp', [e.Id, g.Id])" :disabled="g.Exercises.indexOf(e) == 0">Up</b-button>
+                  <b-button variant="outline-secondary" size="sm" @click="$store.dispatch('moveExerciseDown', [e.Id, g.Id])" :disabled="g.Exercises.indexOf(e) == g.Exercises.length - 1">Down</b-button>
+                </b-btn-group>
+              </b-col>
+            </b-row>
           </td>
           <td>{{setsFormat(e)}}</td>
           <td>{{repsFormat(e)}}</td>

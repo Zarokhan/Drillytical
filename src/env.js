@@ -1,10 +1,11 @@
+/* eslint-disable */
 export default {
-    PROD_API: 'https://systembolagetwebapi.azurewebsites.net',
+    PROD_API: 'https://leetdev.azurewebsites.net',
     DEV_API: 'https://localhost:44397',
     PROD_CLIENT: 'https://leetdeveloper.se',
     DEV_CLIENT: 'http://localhost:8080',
     GET_API: function() {
-        let api = process.env.NODE_ENV === "development" ? this.DEV_API : this.PROD_API
+        let api = process.env.NODE_ENV === "development" ? this.DEV_API : this.PROD_API 
         return api
     },
     GET_CLIENT_URL: function() {
@@ -15,3 +16,4 @@ export default {
         return process.env.NODE_ENV === "development" ? true : false
     }
 }
+/* eslint-enable */
