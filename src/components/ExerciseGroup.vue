@@ -4,9 +4,12 @@
     <!-- Card Header -->
     <div class="card-header">
       <b-row>
-        <b-col sm="8">
-          <h3 v-if="!g.edit">{{g.Name}}</h3>
-          <b-input style="margin-bottom: 0.5em;" v-else id="editGroupNameInput" v-model="g.editinput"/>
+        <b-col sm="8" v-if="!g.edit">
+          <h3 >{{g.Name}}</h3>
+        </b-col>
+        <b-col sm="8" v-else>
+          <b-input aria-describedby="exerciseGroupHelp"  id="editGroupNameInput" v-model="g.editinput"/>
+          <b-form-text style="margin-bottom: 0.5em;" id="exerciseGroupHelp">Exercise Group Name</b-form-text>
         </b-col>
         <b-col sm="4">
           <div v-if="editMode">
@@ -65,6 +68,15 @@
               </b-col>
               <b-col cols="4">
                 <b-button variant="primary" @click="addExercise(g)" :disabled="g.newExercise.Name.length < 2">Add</b-button>
+              </b-col>
+            </b-row>
+            <h4>Duplicate Exercise</h4>
+            <b-row>
+              <b-col cols="8">
+                <b-form-select v-model="g.selected" :options="g.options" />
+              </b-col>
+              <b-col cols="4">
+                <b-button variant="primary" @click="duplicateExercise(g)" :disabled="g.selected == null">Duplicate</b-button>
               </b-col>
             </b-row>
           </th>
@@ -141,7 +153,7 @@
             </b-row>
             <b-row style="margin-bottom: 0.5em;">
               <b-col cols="4">
-                <b-button variant="primary" @click="$store.dispatch('saveExercise', [e])" :disabled="e.Name < 3">Save</b-button>
+                <b-button variant="primary" @click="saveExercise(e)" :disabled="e.Name < 3">Save</b-button>
               </b-col>
               <b-col cols="4">
                 <b-button variant="secondary" @click="e.edit=false">Cancel</b-button>
@@ -156,15 +168,30 @@
 
 <script>
 import exerciseValidation from '../exercisevalidation'
+import axios from '../myaxios'
 
 export default {
   name: 'exercisegroup',
   props: {
     editMode: false, // PageEdit
-    group: {},
+    groupId: 0,
     info: {}
   },
   methods: {
+    duplicateExercise: function(group) {
+      let _this = this
+      axios.get('/api/exercise/'+group.selected, this.$store.getters.getAuthConfig)
+      .then(function(response){
+        let exercise = response.data
+        exercise.Id = 0
+        exercise.GroupId = group.Id
+        // post new exercise to group
+        _this.$store.dispatch('addExercise', [exercise])
+        .then(function(){
+          group.selected = null
+        })
+      })
+    },
     exerciseNameFormat: function(exercise) {
       if (!exercise.WebLink) { return exercise.Name }
       return "<a href='" + exercise.WebLink + "'>" + exercise.Name + "</a>"
@@ -213,11 +240,15 @@ export default {
         group.newExercise.Note = ""
         group.newExercise.WebLink = ""
       })
+    },
+    saveExercise: function(exercise) {
+      console.log(exercise)
+      this.$store.dispatch('saveExercise', [exercise])
     }
   },
   computed: {
     g: function() {
-      return this.group
+      return this.$store.getters.getGroupById(this.groupId)
     }
   },
   created() {

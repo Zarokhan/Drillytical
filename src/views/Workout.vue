@@ -27,7 +27,7 @@
       <b-alert :variant="info.type" :show="info.msg.length != 0">{{ info.msg }}</b-alert>
       <b-row>
         <b-col lg="6" md="12" sm="12" v-for="g in groups" :key="g.key">
-          <exercisegroup :group="g" :editMode="editMode" :info="info"/>
+          <exercisegroup :groupId="g.Id" :editMode="editMode" :info="info"/>
         </b-col>
       </b-row>
     </b-container>
@@ -124,11 +124,11 @@ body {
   background:     linear-gradient(
       rgba(255, 255, 255, 0.90), 
       rgba(255, 255, 255, 0.0)
-    ) no-repeat, url("../assets/trainingbg.jpg") no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+    ) no-repeat, url("../assets/trainingbg.jpg") no-repeat center center fixed !important;
+  -webkit-background-size: cover !important;
+  -moz-background-size: cover !important;
+  -o-background-size: cover !important;
+  background-size: cover !important;
 }
 
 button, .btn-group {

@@ -21,6 +21,9 @@ export default new Vuex.Store({
     getGroups: (state) => {
       return state.groups
     },
+    getGroupById: (state) => (Id) => {
+      return state.groups.filter(g => g.Id == Id)[0]
+    },
     getCredentials: (state) => {
       return state.credentials
     },
@@ -113,7 +116,7 @@ export default new Vuex.Store({
       const exercise1 = group.Exercises.filter(e => e.Id == exerciseId)[0]
       const indexOf1 = group.Exercises.indexOf(exercise1)
       const exercise2 = group.Exercises[indexOf1+1]
-      axios.put('api/exercise/'+exercise1.Id+'/'+exercise2.Id, null, getters.getAuthConfig)
+      axios.put('/api/exercise/'+exercise1.Id+'/'+exercise2.Id, null, getters.getAuthConfig)
       .then(function(){
         // Switch Id properties
         const tempId = exercise1.Id
