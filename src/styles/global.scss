@@ -1,0 +1,16 @@
+$text: rgb(24, 24, 24);
+$topbg: rgb(255, 255, 255);
+$altbg: rgb(231, 231, 231);
+$border: rgb(207, 207, 207);
+$primary: rgb(68, 149, 255);
+$danger: rgb(206, 26, 26);
+
+.btn-primary {
+    background: $primary;
+    border: 1px solid $primary;
+}
+
+.btn-danger {
+    background: $danger;
+    border: 1px solid $danger;
+}

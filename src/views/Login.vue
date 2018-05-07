@@ -8,7 +8,7 @@
             <b-form v-if="!loading" id="loginform">
                 <b-input id="login" placeholder="Username" v-model="user" />
                 <b-input id="password" placeholder="Password" type="password" v-model="pass"/>
-                <b-button type="submit" variant="primary" @click="login">Login</b-button>
+                <b-button style="margin-bottom: 0.5em;" type="submit" variant="primary" @click="login">Login</b-button>
                 <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0" v-model="remember">Remember me</b-form-checkbox>
             </b-form>
             <spinner v-else />
@@ -105,8 +105,5 @@ export default {
     button {
         margin-right: 0.5em;
     }
-}
-body {
-  background: white;
 }
 </style>

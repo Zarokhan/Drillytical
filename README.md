@@ -1,5 +1,6 @@
-# Drillytical
-Web client for training app, input data for each exercise. Overview of your training progress.
+# LeetDev
+## Workout
+Web client app for training. Run workout mode to gather data for each exercise. Overview of your training progress.
 
 ## commands
 ### npm run dev

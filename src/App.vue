@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <b-navbar v-if="loggedin" toggleable="md" type="dark" variant="info">
+    <b-navbar v-if="loggedin" toggleable="md">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
       <b-navbar-brand href="/">LeetDev</b-navbar-brand>
       <b-collapse is-nav id="nav_collapse">
@@ -16,6 +16,7 @@
               <em>{{user.UserName}}</em>
             </template>
             <b-dropdown-item to="/profile">Profile</b-dropdown-item>
+            <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item @click="signout">Signout</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -68,23 +69,74 @@ export default {
 }
 </script>
 <style lang="scss">
-$black: rgb(24, 24, 24);
+@import "./styles/global.scss";
+
 #app {
   font-family: 'Abel', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: $black;
+  color: $text;
 }
 
 a:hover {
   text-decoration: none;
 }
 
-.navbar {
+.table {
+  thead {
+    th {
+      border: 0;
+    }
+  }
+  td {
+    border-top: 1px solid $border;
+  }
+}
+
+.card {
+  border: 1px solid $border;
+  .card-header {
+    background-color: $altbg;
+    border: 0;
+  }
+  .card-body {
+    .table {
+      margin: 0;
+    }
+  }
+}
+
+nav {
   margin-bottom: 1em;
+  background: $altbg;
+  border-bottom: 1px solid $border;
+
+  .nav-item {
+    text-align: center;
+
+    a:hover {
+      font-weight: bold;
+    }
+  }
+
+  .navbar-brand {
+    a:hover {
+      font-weight: bold !important;
+    }
+  }
 }
 
 body {
   background: white;
+}
+
+@media only screen and (max-width: 767px) {
+    /* For mobile phones: */
+  .navbar-brand {
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    text-transform: uppercase;
+  }
 }
 </style>

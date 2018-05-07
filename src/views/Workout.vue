@@ -8,7 +8,7 @@
         </b-col>
         <b-col sm="3" style="margin-bottom: 1em;">
           <b-button v-if="!editMode" variant="primary" @click="toggleEdit()">Edit Mode</b-button>
-          <b-button v-else variant="outline-primary" @click="toggleEdit()">Cancel Edit</b-button>
+          <b-button v-else variant="outline-success" @click="toggleEdit()">Done</b-button>
         </b-col>
       </b-row>
       <!-- Add Exercise Group -->
@@ -120,16 +120,7 @@ export default {
 }
 </script>
 <style lang="scss">
-body {
-  background:     linear-gradient(
-      rgba(255, 255, 255, 0.90), 
-      rgba(255, 255, 255, 0.0)
-    ) no-repeat, url("../assets/trainingbg.jpg") no-repeat center center fixed !important;
-  -webkit-background-size: cover !important;
-  -moz-background-size: cover !important;
-  -o-background-size: cover !important;
-  background-size: cover !important;
-}
+@import "../styles/global.scss";
 
 button, .btn-group {
   width: 100%;
