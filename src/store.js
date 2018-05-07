@@ -21,6 +21,12 @@ export default new Vuex.Store({
     getGroups: (state) => {
       return state.groups
     },
+    indexOfGroup: (state) => (group) => {
+      return state.groups.indexOf(group)
+    },
+    isGroupLast: (state) => (group) => {
+      return (state.groups.length - 1) == (state.groups.indexOf(group))
+    },
     getGroupById: (state) => (Id) => {
       return state.groups.filter(g => g.Id == Id)[0]
     },
@@ -93,12 +99,32 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    moveExerciseUp({getters}, [exerciseId, groupId]) {
+    moveGroup({getters}, [group, moveIndex]) {
+      const idOfGroup = group.Id
+      const indexOfGroup = getters.getGroups.indexOf(group);
+      const otherGroup = getters.getGroups[indexOfGroup+moveIndex]
+      axios.put('api/exercisegroup/'+group.Id+'/'+otherGroup.Id, null, getters.getAuthConfig)
+      .then(function(){
+        // switch groupid
+        group.Id = otherGroup.Id
+        otherGroup.Id = idOfGroup
+        group.Exercises.forEach(element => {
+          element.GroupId = group.Id
+        });
+        otherGroup.Exercises.forEach(element => {
+          element.GroupId = otherGroup.Id
+        })
+        // switch array index
+        getters.getGroups[indexOfGroup] = otherGroup
+        getters.getGroups[indexOfGroup+moveIndex] = group
+      })
+    },
+    moveExercise({getters}, [exerciseId, groupId, moveIndex]) {
       const groups = getters.getGroups;
       const group = groups.filter(g => g.Id == groupId)[0];
       const exercise1 = group.Exercises.filter(e => e.Id == exerciseId)[0]
       const indexOf1 = group.Exercises.indexOf(exercise1)
-      const exercise2 = group.Exercises[indexOf1-1]
+      const exercise2 = group.Exercises[indexOf1+moveIndex]
       axios.put('api/exercise/'+exercise1.Id+'/'+exercise2.Id, null, getters.getAuthConfig)
       .then(function(){
         // Switch Id properties
@@ -107,24 +133,7 @@ export default new Vuex.Store({
         exercise2.Id = tempId
         // Switch index in array
         group.Exercises[indexOf1] = exercise2
-        group.Exercises[indexOf1-1] = exercise1
-      })
-    },
-    moveExerciseDown({getters}, [exerciseId, groupId]) {
-      const groups = getters.getGroups;
-      const group = groups.filter(g => g.Id == groupId)[0];
-      const exercise1 = group.Exercises.filter(e => e.Id == exerciseId)[0]
-      const indexOf1 = group.Exercises.indexOf(exercise1)
-      const exercise2 = group.Exercises[indexOf1+1]
-      axios.put('/api/exercise/'+exercise1.Id+'/'+exercise2.Id, null, getters.getAuthConfig)
-      .then(function(){
-        // Switch Id properties
-        const tempId = exercise1.Id
-        exercise1.Id = exercise2.Id
-        exercise2.Id = tempId
-        // Switch index in array
-        group.Exercises[indexOf1] = exercise2
-        group.Exercises[indexOf1+1] = exercise1
+        group.Exercises[indexOf1+moveIndex] = exercise1
       })
     },
     saveExercise({commit, getters}, [exercise]) {

@@ -1,8 +1,12 @@
 $text: rgb(24, 24, 24);
+$black: $text;
 $topbg: rgb(255, 255, 255);
 $altbg: rgb(231, 231, 231);
 $border: rgb(207, 207, 207);
 $primary: rgb(68, 149, 255);
+$secondary: $altbg;
+$secondary-outline: rgb(185, 185, 185);
+$secondary-outline-border: rgb(203, 203, 203);
 $danger: rgb(206, 26, 26);
 
 .btn-primary {

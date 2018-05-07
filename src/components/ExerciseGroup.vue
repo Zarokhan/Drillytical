@@ -13,9 +13,13 @@
         </b-col>
         <b-col sm="4">
           <div v-if="editMode">
-            <b-button-group v-if="!g.edit">
+            <b-button-group style="margin-bottom: 0.5em;" v-if="!g.edit">
               <b-button variant="danger" @click="deleteGroup(g.Id)">Delete</b-button>
               <b-button variant="primary" @click="toggleEditGroup(g)">Edit</b-button>
+            </b-button-group>
+            <b-button-group v-if="!g.edit">
+              <b-button variant="secondary" :disabled="$store.getters.indexOfGroup(g) == 0" @click="$store.dispatch('moveGroup', [g, -1])">Up</b-button>
+              <b-button variant="outline-secondary" :disabled="$store.getters.isGroupLast(g)" @click="$store.dispatch('moveGroup', [g, 1])">Down</b-button>
             </b-button-group>
             <b-button-group v-else>
               <b-button variant="primary" @click="$store.dispatch('saveGroup', [g])">Save</b-button>
@@ -104,8 +108,8 @@
                 </b-btn-group>
                 <span>Move</span>
                 <b-btn-group  >
-                  <b-button variant="secondary" size="sm" @click="$store.dispatch('moveExerciseUp', [e.Id, g.Id])" :disabled="g.Exercises.indexOf(e) == 0">Up</b-button>
-                  <b-button variant="outline-secondary" size="sm" @click="$store.dispatch('moveExerciseDown', [e.Id, g.Id])" :disabled="g.Exercises.indexOf(e) == g.Exercises.length - 1">Down</b-button>
+                  <b-button variant="secondary" size="sm" @click="$store.dispatch('moveExercise', [e.Id, g.Id, -1])" :disabled="g.Exercises.indexOf(e) == 0">Up</b-button>
+                  <b-button variant="outline-secondary" size="sm" @click="$store.dispatch('moveExercise', [e.Id, g.Id, 1])" :disabled="g.Exercises.indexOf(e) == g.Exercises.length - 1">Down</b-button>
                 </b-btn-group>
               </b-col>
             </b-row>

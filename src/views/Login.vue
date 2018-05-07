@@ -1,18 +1,25 @@
 <template>
   <div id="login">
     <b-container>
-        <div class="loginblock">
-            <h1>Leet Developer</h1>
-            <p>Currently under construction</p>
-            <b-alert :variant="alertType" :show="alertMsg.length != 0">{{ alertMsg }}</b-alert>
-            <b-form v-if="!loading" id="loginform">
-                <b-input id="login" placeholder="Username" v-model="user" />
-                <b-input id="password" placeholder="Password" type="password" v-model="pass"/>
-                <b-button style="margin-bottom: 0.5em;" type="submit" variant="primary" @click="login">Login</b-button>
-                <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0" v-model="remember">Remember me</b-form-checkbox>
-            </b-form>
-            <spinner v-else />
-        </div>
+        <b-row>
+            <b-col offset-lg="4" lg="4">
+                <h1>Leet Developer</h1>
+                <p>Currently under construction</p>
+                <b-alert :variant="alertType" :show="alertMsg.length != 0">{{ alertMsg }}</b-alert>
+                <b-form v-if="!loading" id="loginform">
+                    <b-input id="login" description="Username" v-model="user" />
+                    <b-input id="password" description="Password" type="password" v-model="pass"/>
+                    <b-button-group>
+                        <b-button style="margin-bottom: 0.5em;" type="submit" variant="primary" @click="login">Login</b-button>
+                        <b-button style="margin-bottom: 0.5em;" type="submit" variant="secondary" @click="register">Register</b-button>
+                    </b-button-group>
+                    <b-form-checkbox-group>
+                        <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0" v-model="remember">Remember me</b-form-checkbox>
+                    </b-form-checkbox-group>
+                </b-form>
+                <spinner v-else />
+            </b-col>
+        </b-row>
     </b-container>
   </div>
 </template>
@@ -36,6 +43,10 @@ export default {
       }
   },
   methods: {
+    register: function(event) {
+        event.preventDefault()
+        this.$router.push('/register')
+    },
     login: function(event) {
         event.preventDefault()
         let _this = this;
@@ -87,23 +98,31 @@ export default {
 }
 </script>
 <style lang="scss">
-.loginblock {
-    margin: 0 auto;
-    margin-top: 2em;
-    max-width: 400px;
+@import "../styles/global.scss";
+
+.btn-secondary {
+    background: $secondary;
+    color: $black;
+    border: 1px solid $border;
+}
+#login {
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .active, .open>.dropdown-toggle.btn-secondary {
+    background: $secondary-outline;
+    color: $black;
+    border: 1px solid $secondary-outline-border;
+}
 }
 
-#loginform {
-    margin-top: 0.5em;
-    width: 100%;
 
+form {
     input {
-        max-width: 400px;
         margin-bottom: 0.5em;
     }
-
+    .btn-group {
+        width: 100%;
+    }
     button {
-        margin-right: 0.5em;
+        width: 100%;
     }
 }
 </style>
