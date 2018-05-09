@@ -17,7 +17,6 @@
                         label="Email"
                         description="We'll never share your email with anyone.">
                         <b-form-input id="email"
-
                             type="email"
                             v-model="form.Email"
                             required
@@ -101,10 +100,14 @@
                         :label-cols="3"
                         breakpoint="md">
                         <b-form-checkbox-group v-model="checked" id="checks">
-                            <b-form-checkbox value="terms">I hereby acknowledge that I have read and understood the terms and conditions.</b-form-checkbox>
+                            <b-form-checkbox value="terms" unchecked-value="">I hereby acknowledge that I have read and understood the <a href="#/register" @click="toggleTerms()">terms and conditions.</a></b-form-checkbox>
                         </b-form-checkbox-group>
+                        <div :ref="terms" id="terms" class="m-fadeOut">
+                            <h3>Terms and conditions</h3>
+                            <p>We store the information above in a secure database.</p>
+                        </div>
                         <b-button-group style="margin-top: 1em;">
-                            <b-button variant="primary" type="submit" disabled>Submit</b-button>
+                            <b-button variant="primary" type="submit">Submit</b-button>
                             <b-button variant="secondary" @click="$router.push('/')">Cancel</b-button>
                         </b-button-group>
                     </b-form-group>
@@ -143,13 +146,34 @@ export default {
         info: {
             type: "warning",
             msg: ""
-        }
+        },
+        terms: null
     }
   },
   methods: {
-      onSubmit: (event) => {
-          event.preventDefault();
-      }
+    toggleTerms: function() {
+        /* eslint-disable */
+        terms.classList.toggle('m-fadeIn')
+        terms.classList.toggle('m-fadeOut')
+        /* eslint-enable */
+    },
+    onSubmit: function(event) {
+        event.preventDefault();
+        if (this.checked.length == 0) {
+            this.info.msg = 'Need to accept terms and conditions to register an account.'
+        }
+        if (this.form.Password != this.validatePW) {
+            this.info.msg = 'Password fields don\'t match.'
+        }
+        let _this = this
+        myaxios.post('/api/applicants', this.form, this.$store.getters.getAuthConfig)
+        .then(function(){
+            _this.$router.push('/')
+        })
+        .catch(function(){
+            _this.info.msg = 'Something went wrong. Maybe username was already taken.'
+        })
+    }
   },
   created: function() {
     const _this = this
@@ -157,7 +181,7 @@ export default {
     .then((response) => {
         const data = response.data
         data.forEach(element => {
-            _this.countries.push(element.nativeName)
+            _this.countries.push(element.name)
         });
     })
   }
@@ -166,13 +190,26 @@ export default {
 <style lang="scss">
 @import "../styles/global.scss";
 
+.m-fadeOut {
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+    transition: visibility 300ms linear, opacity 300ms linear, height 500ms ease-out;
+}
+.m-fadeIn {
+    visibility: visible;
+    opacity: 1;
+    height: 70px;
+    transition: visibility 300ms linear, opacity 300ms linear, height 500ms ease-in;
+}
+
 .btn-secondary {
     background: $secondary;
     color: $black;
     border: 1px solid $border;
 }
 
-.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .active, .open>.dropdown-toggle.btn-secondary {
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .open>.dropdown-toggle.btn-secondary {
     background: $secondary-outline;
     color: $black;
     border: 1px solid $secondary-outline-border;

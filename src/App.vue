@@ -10,6 +10,14 @@
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
+          <b-nav-item-dropdown v-if="$store.getters.isAdmin" right>
+            <template slot="button-content">
+              <em>Administrator</em>
+            </template>
+            <b-dropdown-item to="/applicants">Applicants</b-dropdown-item>
+            <b-dropdown-divider></b-dropdown-divider>
+            <b-dropdown-item to='/users' disabled>Users</b-dropdown-item>
+          </b-nav-item-dropdown>
           <b-nav-item-dropdown right>
             <!-- Using button-content slot -->
             <template slot="button-content">
@@ -20,7 +28,6 @@
             <b-dropdown-item @click="signout">Signout</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
-
       </b-collapse>
     </b-navbar>
     <b-nav v-else>
@@ -113,15 +120,17 @@ nav {
 
   .nav-item {
     text-align: center;
-
-    a:hover {
+    
+    .active {
       font-weight: bold;
     }
-  }
 
-  .navbar-brand {
-    a:hover {
-      font-weight: bold !important;
+    a:hover, a:active {
+      font-weight: bold;
+    }
+    .disabled {
+      font-weight: 400 !important;
+      cursor: unset;
     }
   }
 }

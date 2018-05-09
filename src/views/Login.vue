@@ -106,11 +106,16 @@ export default {
     border: 1px solid $border;
 }
 #login {
-.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .active, .open>.dropdown-toggle.btn-secondary {
-    background: $secondary-outline;
-    color: $black;
-    border: 1px solid $secondary-outline-border;
-}
+    .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active, .open>.dropdown-toggle.btn-secondary {
+        background: $secondary-outline;
+        color: $black;
+        border: 1px solid $secondary-outline-border;
+    }
+    .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .active.btn-primary, .open>.dropdown-toggle.btn-primary {
+        background: $primary-active;
+        color: $white;
+        border: 1px solid $secondary-outline-border;
+    }
 }
 
 

@@ -27,7 +27,8 @@
       <b-alert :variant="info.type" :show="info.msg.length != 0">{{ info.msg }}</b-alert>
       <b-row>
         <b-col lg="6" md="12" sm="12" v-for="g in groups" :key="g.key">
-          <exercisegroup :groupId="g.Id" :editMode="editMode" :info="info"/>
+          <exercisegroup v-if="!g.loading" :groupId="g.Id" :editMode="editMode" :info="info"/>
+          <spinner v-else />
         </b-col>
       </b-row>
     </b-container>

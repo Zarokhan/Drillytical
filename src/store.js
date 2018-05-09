@@ -18,8 +18,20 @@ export default new Vuex.Store({
     user: null
   },
   getters: {
+    isAdmin: (state) => {
+      return state.user.Role == 'SuperAdmin'
+    },
     getGroups: (state) => {
       return state.groups
+    },
+    isGroupLoading: (state) => {
+      let loading = false
+      state.groups.forEach(element => {
+        if(element.loading) {
+          loading = true
+        }
+      });
+      return loading
     },
     indexOfGroup: (state) => (group) => {
       return state.groups.indexOf(group)
@@ -103,6 +115,7 @@ export default new Vuex.Store({
       const idOfGroup = group.Id
       const indexOfGroup = getters.getGroups.indexOf(group);
       const otherGroup = getters.getGroups[indexOfGroup+moveIndex]
+      group.loading = true
       axios.put('api/exercisegroup/'+group.Id+'/'+otherGroup.Id, null, getters.getAuthConfig)
       .then(function(){
         // switch groupid
@@ -117,11 +130,12 @@ export default new Vuex.Store({
         // switch array index
         getters.getGroups[indexOfGroup] = otherGroup
         getters.getGroups[indexOfGroup+moveIndex] = group
+        group.loading = false
       })
     },
     moveExercise({getters}, [exerciseId, groupId, moveIndex]) {
-      const groups = getters.getGroups;
-      const group = groups.filter(g => g.Id == groupId)[0];
+      const groups = getters.getGroups
+      const group = groups.filter(g => g.Id == groupId)[0]
       const exercise1 = group.Exercises.filter(e => e.Id == exerciseId)[0]
       const indexOf1 = group.Exercises.indexOf(exercise1)
       const exercise2 = group.Exercises[indexOf1+moveIndex]

@@ -18,8 +18,8 @@
               <b-button variant="primary" @click="toggleEditGroup(g)">Edit</b-button>
             </b-button-group>
             <b-button-group v-if="!g.edit">
-              <b-button variant="secondary" :disabled="$store.getters.indexOfGroup(g) == 0" @click="$store.dispatch('moveGroup', [g, -1])">Up</b-button>
-              <b-button variant="outline-secondary" :disabled="$store.getters.isGroupLast(g)" @click="$store.dispatch('moveGroup', [g, 1])">Down</b-button>
+              <b-button variant="secondary" :disabled="$store.getters.indexOfGroup(g) == 0 || $store.getters.isGroupLoading" @click="$store.dispatch('moveGroup', [g, -1])">Up</b-button>
+              <b-button variant="outline-secondary" :disabled="$store.getters.isGroupLast(g) || $store.getters.isGroupLoading" @click="$store.dispatch('moveGroup', [g, 1])">Down</b-button>
             </b-button-group>
             <b-button-group v-else>
               <b-button variant="primary" @click="$store.dispatch('saveGroup', [g])">Save</b-button>

@@ -16,6 +16,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import "../styles/global.scss";
+
 @keyframes lds-spinner {
   0% {
     opacity: 1;
@@ -41,7 +43,7 @@ export default {
   position: absolute;
   -webkit-animation: lds-spinner linear 1s infinite;
   animation: lds-spinner linear 1s infinite;
-  background: #3ca1ff;
+  background: $altbg;
   width: 12px;
   height: 24px;
   border-radius: 40%;
