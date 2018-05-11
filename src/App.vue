@@ -16,7 +16,7 @@
             </template>
             <b-dropdown-item to="/applicants">Applicants</b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item to='/users' disabled>Users</b-dropdown-item>
+            <b-dropdown-item to='/users'>Users</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item-dropdown right>
             <!-- Using button-content slot -->

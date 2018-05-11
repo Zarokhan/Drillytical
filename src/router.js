@@ -5,6 +5,7 @@ import Workout from './views/Workout.vue'
 import Profile from './views/Profile'
 import Register from './views/Register'
 import Applicants from './views/Applicants'
+import Users from './views/Users'
 
 Vue.use(Router)
 
@@ -32,8 +33,13 @@ export default new Router({
     },
     {
       path: '/applicants',
-      name: 'register',
+      name: 'applicants',
       component: Applicants
+    },
+    {
+      path: '/users',
+      name: 'users',
+      component: Users
     }
   ]
 })
