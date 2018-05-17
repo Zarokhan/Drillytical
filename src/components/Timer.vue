@@ -7,13 +7,13 @@
           <p class="text">Minutes</p>
         </b-col>
         <b-col sm='6'>
-          <p class="digit">{{ seconds | two_digits }}</p>
+          <p class="digit">{{ parseInt(seconds) | two_digits }}</p>
           <p class="text">Seconds</p>
         </b-col>
       </b-row>
     </b-container>
     <div v-else>
-      <p>{{ minutes | two_digits }} m {{ seconds | two_digits }} s</p>
+      <p>{{ minutes | two_digits }} m {{ parseInt(seconds) | two_digits }} s</p>
     </div>
   </div>
 </template>
