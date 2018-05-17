@@ -12,30 +12,33 @@
 export default {
   name: 'profile',
   methods: {
-    signout: function(event) {
+    signout: function (event) {
       event.preventDefault()
       let _this = this
       // Clear localstorage and store, push to /
       this.$store.dispatch('signout')
-      .then(function(){
-        _this.$router.push('/')
-      })
+        .then(() => {
+          _this.$router.push('/')
+        })
     }
   },
   computed: {
-      user: function () {
-          return this.$store.getters.getUser
-      }
+    user: function () {
+      return this.$store.getters.getUser
+    }
   },
-  created() {
+  created () {
     // Authenticate user
     let _this = this
     this.$store.dispatch('authorize')
-    .catch(function() {
-      _this.$router.push('/')
-    })
+      .catch(() => {
+        _this.$router.push('/')
+      })
   }
 }
 </script>
 <style lang="scss">
+#profile {
+  margin-top: 1em;
+}
 </style>

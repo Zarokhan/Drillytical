@@ -9,18 +9,25 @@ import store from './store'
 
 Vue.use(BootstrapVue)
 
+Vue.filter('two_digits', function (value) {
+  if (value.toString().length <= 1) {
+    return '0' + value.toString()
+  }
+  return value.toString()
+})
+
 new Vue({
   router,
   store,
   render: h => h(App),
   methods: {
-    isNumber: function(evt) {
-      evt = (evt) ? evt : window.event;
-      var charCode = (evt.which) ? evt.which : evt.keyCode;
+    isNumber: (evt) => {
+      evt = (evt !== null) ? evt : window.event
+      var charCode = (evt.which) ? evt.which : evt.keyCode
       if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-        evt.preventDefault();
+        evt.preventDefault()
       } else {
-        return true;
+        return true
       }
     }
   }

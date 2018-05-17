@@ -26,7 +26,7 @@
               <b-button variant="outline-secondary" @click="toggleEditGroup(g)">Cancel</b-button>
             </b-button-group>
           </div>
-          <b-button v-else variant="success" disabled>Workout</b-button>
+          <b-button v-else variant="success" @click="$router.push('/workout/' + g.Id)">Workout</b-button>
         </b-col>
       </b-row>
     </div>
@@ -182,80 +182,79 @@ export default {
     info: {}
   },
   methods: {
-    duplicateExercise: function(group) {
+    duplicateExercise: function (group) {
       let _this = this
-      axios.get('/api/exercise/'+group.selected, this.$store.getters.getAuthConfig)
-      .then(function(response){
-        let exercise = response.data
-        exercise.Id = 0
-        exercise.GroupId = group.Id
-        // post new exercise to group
-        _this.$store.dispatch('addExercise', [exercise])
-        .then(function(){
-          group.selected = null
+      axios.get('/api/exercise/' + group.selected, this.$store.getters.getAuthConfig)
+        .then((response) => {
+          let exercise = response.data
+          exercise.Id = 0
+          exercise.GroupId = group.Id
+          // post new exercise to group
+          _this.$store.dispatch('addExercise', [exercise])
+            .then(() => {
+              group.selected = null
+            })
         })
-      })
     },
-    exerciseNameFormat: function(exercise) {
+    exerciseNameFormat: (exercise) => {
       if (!exercise.WebLink) { return exercise.Name }
-      return "<a href='" + exercise.WebLink + "'>" + exercise.Name + "</a>"
+      return '<a href="' + exercise.WebLink + '">' + exercise.Name + '</a>'
     },
-    setsFormat: function(exercise) {
-      if (exercise.Sets == 0) { return "" }
+    setsFormat: (exercise) => {
+      if (exercise.Sets === 0) { return '' }
       return exercise.Sets
     },
-    repsFormat: function(exercise) {
-      if (exercise.MinReps == 0) { return "" }
-      if (exercise.MaxReps == 0) { return "" + exercise.MaxReps }
-      return exercise.MinReps + " - " + exercise.MaxReps
+    repsFormat: (exercise) => {
+      if (exercise.MinReps === 0) { return '' }
+      if (exercise.MaxReps === 0) { return '' + exercise.MaxReps }
+      return exercise.MinReps + ' - ' + exercise.MaxReps
     },
-    restTimeFormat: function(timeInSeconds) {
-      if (timeInSeconds == 0) { return "" }
-      let min = parseInt(timeInSeconds/60)
-      let sec = parseInt(timeInSeconds%60)
-      if (sec == 0) { return min + "m" }
-      if (min == 0) { return sec + "s" }
-      return min + "m " + sec + "s"
+    restTimeFormat: (timeInSeconds) => {
+      if (timeInSeconds === 0) { return '' }
+      let min = parseInt(timeInSeconds / 60)
+      let sec = parseInt(timeInSeconds % 60)
+      if (sec === 0) { return min + 'm' }
+      if (min === 0) { return sec + 's' }
+      return min + 'm ' + sec + 's'
     },
-    toggleEditGroup: function(group) {
+    toggleEditGroup: function (group) {
       this.$store.commit('toggleEdit', group.Id)
       if (!group.edit) {
-        group.Exercises.forEach(function(e){
+        group.Exercises.forEach((e) => {
           e.edit = false
         })
       }
     },
-    toggleExerciseEdit: function(exercise) {
+    toggleExerciseEdit: (exercise) => {
       exercise.edit = !exercise.edit
     },
-    deleteGroup: function(id) {
-      if(confirm("Are you sure?")) {
+    deleteGroup: function (id) {
+      if (confirm('Are you sure?')) {
         // dispatch
         this.$store.dispatch('deleteGroup', [id])
       }
-      this.info.msg = ""
+      this.info.msg = ''
     },
-    addExercise: function(group) {
+    addExercise: function (group) {
       exerciseValidation(group.newExercise)
-      this.$store.dispatch("addExercise", [ group.newExercise ])
-      .then(function(){
-        // Clear
-        group.newExercise.Name = ""
-        group.newExercise.Note = ""
-        group.newExercise.WebLink = ""
-      })
+      this.$store.dispatch('addExercise', [ group.newExercise ])
+        .then(() => {
+          // Clear
+          group.newExercise.Name = ''
+          group.newExercise.Note = ''
+          group.newExercise.WebLink = ''
+        })
     },
-    saveExercise: function(exercise) {
-      console.log(exercise)
+    saveExercise: function (exercise) {
       this.$store.dispatch('saveExercise', [exercise])
     }
   },
   computed: {
-    g: function() {
+    g: function () {
       return this.$store.getters.getGroupById(this.groupId)
     }
   },
-  created() {
+  created () {
   }
 }
 </script>

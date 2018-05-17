@@ -63,56 +63,53 @@ export default {
   components: {
     spinner
   },
-  data: function() {
+  data: () => {
     return {
       users: [],
       loading: true
     }
   },
   methods: {
-    alternatingStripes: function(index) {
-      if (index%2==0) { return "" }
-      return "stripe"
+    alternatingStripes: (index) => {
+      if (index % 2 === 0) { return '' }
+      return 'stripe'
     },
-    toggleUserActivity: function(user) {
+    toggleUserActivity: function (user) {
       user.IsActive = !user.IsActive
-      console.log(this.$store.getters.getAuthConfig)
-      axios.put('/api/user/'+user.Id, user, this.$store.getters.getAuthConfig)
-      .then(function(){
-        console.log('done')
-      })
+      axios.put('/api/user/' + user.Id, user, this.$store.getters.getAuthConfig)
+        .then(() => {
+        })
     },
-    removeUser: function(user) {
+    removeUser: function (user) {
       if (!confirm('You want to delete: ' + user.UserName + '?')) { return }
       let _this = this
-      console.log(this.$store.getters.getAuthConfig)
-      axios.delete('/api/user/'+user.Id, this.$store.getters.getAuthConfig)
-      .then(function(){
-        _this.users.splice(_this.users.indexOf(user), 1)
-      })
+      axios.delete('/api/user/' + user.Id, this.$store.getters.getAuthConfig)
+        .then(() => {
+          _this.users.splice(_this.users.indexOf(user), 1)
+        })
     }
   },
   computed: {
   },
-  created() {
+  created () {
     // Authenticate user and role
     let _this = this
     this.$store.dispatch('authorize')
-    .then(function(){
-      if (_this.$store.getters.isAdmin) {
-        // Load users
-        axios.get('/api/users', _this.$store.getters.getAuthConfig)
-        .then(function(response){
-          _this.users = response.data
-          _this.loading = false
-        })
-      } else {
+      .then(() => {
+        if (_this.$store.getters.isAdmin) {
+          // Load users
+          axios.get('/api/users', _this.$store.getters.getAuthConfig)
+            .then((response) => {
+              _this.users = response.data
+              _this.loading = false
+            })
+        } else {
+          _this.$router.push('/')
+        }
+      })
+      .catch(() => {
         _this.$router.push('/')
-      }
-    })
-    .catch(function() {
-      _this.$router.push('/')
-    })
+      })
   }
 }
 </script>
@@ -120,6 +117,8 @@ export default {
 @import "../styles/global.scss";
 
 #users {
+  margin-top: 1em;
+
   p {
     padding-top: 0.5em;
   }

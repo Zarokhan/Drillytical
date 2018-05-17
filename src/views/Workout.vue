@@ -1,141 +1,184 @@
 <template>
   <div id="workout">
-    <b-container v-if="!loading">
-      <!-- Header -->
-      <b-row>
-        <b-col sm="9">
-          <h1>Workout Overview</h1>
-        </b-col>
-        <b-col sm="3" style="margin-bottom: 1em;">
-          <b-button v-if="!editMode" variant="primary" @click="toggleEdit()">Edit Mode</b-button>
-          <b-button v-else variant="outline-success" @click="toggleEdit()">Done</b-button>
-        </b-col>
-      </b-row>
-      <!-- Add Exercise Group -->
-      <b-row v-if="editMode" style="margin-bottom: 1em;">
-        <b-col sm="10">
-          <b-input id="newGroupInput" aria-describedby="inputGroupExerciseHelp" v-model="newGroupInput"/>
-          <b-form-text id="inputGroupExerciseHelp" style="margin-bottom: 0.5em;">
-            Group Exercise Name
-          </b-form-text>
-        </b-col>
-        <b-col sm="2">
-          <b-button variant="primary" cols="2" @click="addGroup">Add</b-button>
-        </b-col>
-      </b-row>
-      <!-- Alert Message -->
-      <b-alert :variant="info.type" :show="info.msg.length != 0">{{ info.msg }}</b-alert>
-      <b-row>
-        <b-col lg="6" md="12" sm="12" v-for="g in groups" :key="g.key">
-          <exercisegroup v-if="!g.loading" :groupId="g.Id" :editMode="editMode" :info="info"/>
-          <spinner v-else />
-        </b-col>
-      </b-row>
+    <b-container>
+      <p style="text-align: center;margin-top: 0.5em;">Total</p>
     </b-container>
-    <spinner v-else />
+    <timer :time="totalTime" :fullWidth="true" />
+    <div v-if='group != null'>
+      <div class="datename">
+        <b-container>
+          <b-row style="text-align:center;">
+            <b-col md='6'>
+              <h1>{{ group.Name }}</h1>
+            </b-col>
+            <b-col md='6'>
+              <h1>{{date}}</h1>
+            </b-col>
+          </b-row>
+        </b-container>
+      </div>
+      <div id="current" style="margin-bottom: 4em;">
+        <b-container>
+          <b-row>
+            <b-col md="6">
+              <h3>{{current.Name}}</h3>
+              <p>{{current.Note}}</p>
+              <p>{{setsFormat(current)}}</p>
+              <p>{{repsFormat(current)}}</p>
+              <p>{{restTimeFormat(current.Rest)}}</p>
+            </b-col>
+            <b-col md="6">
+              <timer style="font-size: 2em; text-align: center;" :time="current.time" :fullWidth="false" />
+              <button class="myButton" @click="beginFlow(current)">Begin</button>
+            </b-col>
+          </b-row>
+        </b-container>
+      </div>
+      <div>
+        <b-container>
+          <h3>Exercises left</h3>
+          <ul>
+            <li v-for="e in group.Exercises" :key="e.Id">{{e.Name}}</li>
+          </ul>
+        </b-container>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from '../myaxios'
-import spinner from '../components/Spinner'
-import exercisegroup from '../components/ExerciseGroup'
-import groupformatter from '../groupformatter'
+import timer from '../components/Timer'
 
 export default {
   name: 'workout',
   components: {
-    spinner,
-    exercisegroup
+    timer
   },
-  data: function() {
+  data: () => {
     return {
-      editMode: false,
-      newGroupInput: "",
-      loading: true,
-      info: {
-        msg: "",
-        type: "warning"
-      }
+      totalTime: 0,
+      group: null,
+      date: null,
+      current: null,
+      PhaseEnum: Object.freeze({'begin': 0}) // begin, workout, rest
     }
   },
   computed: {
-    groups: function() {
-      return this.$store.getters.getGroups
-    }
   },
   methods: {
-    addGroup: function(event) {
-      event.preventDefault()
-      if (this.newGroupInput.length < 2) {
-        this.info.msg = "Need more than 2 characters to name an exercise group."
-        this.info.type = "warning"
-        return
-      }
-      this.info.msg = this.newGroupInput + " group added below."
-      this.info.type = "success"
-      this.$store.dispatch('addGroup', [this.newGroupInput])
+    beginFlow: (exercise) => {
+      // begin => workout => complete set => Fill in info while rest => workout next set
+      clearInterval(exercise.interval)
+      exercise.interval = setInterval(() => {
+        exercise.time += 1
+      }, 1000)
     },
-    toggleEdit: function() {
-      this.editMode = !this.editMode
-      if (!this.editMode) {
-        this.groups.forEach(function(g){
-          groupformatter(g)
-        })
-      }
+    setsFormat: (exercise) => {
+      if (exercise.Sets === 0) { return '' }
+      return 'Sets: ' + exercise.Sets
     },
-    signout: function(event) {
-      event.preventDefault()
-      let _this = this
-      // Clear localstorage and store, push to /
-      this.$store.dispatch('signout')
-      .then(function(){
-        _this.$router.push('/')
-      })
+    repsFormat: (exercise) => {
+      if (exercise.MinReps === 0) { return '' }
+      if (exercise.MaxReps === 0) { return 'Reps: ' + exercise.MaxReps }
+      return 'Reps: ' + exercise.MinReps + ' - ' + exercise.MaxReps
+    },
+    restTimeFormat: (timeInSeconds) => {
+      if (timeInSeconds === 0) { return '' }
+      let min = parseInt(timeInSeconds / 60)
+      let sec = parseInt(timeInSeconds % 60)
+      if (sec === 0) { return 'Rest: ' + min + ' m' }
+      if (min === 0) { return 'Rest: ' + sec + ' s' }
+      return 'Rest: ' + min + 'm ' + sec + 's'
     }
   },
-  created() {
+  created () {
     // Authenticate user
     let _this = this
     this.$store.dispatch('authorize')
-    .then(function(){
-      // Load exercise groups
-      _this.loading = true
-      axios.get('/api/exercisegroup', _this.$store.getters.getAuthConfig)
-      .then(function(response){
-        let groups = response.data
-        _this.loading = false
-        groups.forEach(function(x){
-          groupformatter(x)
-        })
-        _this.$store.commit('setGroups', groups)
+      .then(() => {
+        // fetch exercises
+        const id = _this.$route.params.id
+        axios.get('/api/exercisegroup/' + id, _this.$store.getters.getAuthConfig)
+          .then((response) => {
+            _this.group = response.data
+            console.log(_this.group)
+            // Date format
+            const date = new Date()
+            const mm = date.getMonth() + 1
+            const dd = date.getDate()
+            const yyyy = date.getFullYear()
+            _this.date = dd + '/' + mm + '-' + yyyy
+            // Current exercise
+            _this.current = _this.group.Exercises[1]
+            // Added front-end properties
+            const propFunc = (item) => {
+              item.restTime = 0
+              item.time = 0
+              item.interval = setInterval(() => {}, 1000)
+              item.phase = 'begin' // begin, workout, rest
+            }
+            _this.group.Exercises.forEach(element => {
+              propFunc(element)
+              console.log(element)
+            })
+            // Begin total workout timer
+            setInterval(() => {
+              _this.totalTime += 1
+            }, 1000)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       })
-      .catch(function(error){
-        console.log(error.response)
+      .catch((error) => {
+        console.log(error)
+        _this.$router.push('/')
       })
-    })
-    .catch(function() {
-      _this.$router.push('/')
-    })
   }
 }
 </script>
+
 <style lang="scss">
 @import "../styles/global.scss";
 
-button, .btn-group {
-  width: 100%;
+.datename {
+  background-color: $altbg;
+  padding-top: 0.5em;
 }
 
-.card-header {
-  overflow: auto;
+#current {
+  margin-top: 1em;
+  p {
+    margin: 0.2em;
+  }
+
+  button{
+    display:inline-block;
+    padding:0.7em 1.4em;
+    margin:0 0.3em 0.3em 0;
+    border: 0;
+    border-radius:0.2em;
+    box-sizing: border-box;
+    text-decoration:none;
+    text-transform:uppercase;
+    font-weight:400;
+    color:#FFFFFF;
+    background-color:#3369ff;
+    box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+    text-align:center;
+    position:relative;
+    width: 100%;
+  }
+  button:active{
+    top:0.1em;
+  }
+  @media all and (max-width:30em){
+    button{
+      display:block;
+      margin:0.4em auto;
+    }
+  }
 }
 
-.card-body {
-  padding: 0;
-}
-
-.card {
-  margin-bottom: 1em;
-}
 </style>

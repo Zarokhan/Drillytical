@@ -5,7 +5,7 @@
       <b-navbar-brand href="/">LeetDev</b-navbar-brand>
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav>
-          <b-nav-item to="/workout">Workout</b-nav-item>
+          <b-nav-item to="/workoutoverview">Workout</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -44,7 +44,7 @@
 import env from './env'
 export default {
   name: 'app',
-  data: function() {
+  data: () => {
     return {
       navurls: [
         [env.GET_CLIENT_URL(), 'leetdeveloper'],
@@ -54,15 +54,14 @@ export default {
     }
   },
   methods: {
-    signout: function(event) {
+    signout: function (event) {
       event.preventDefault()
       let _this = this
       // Clear localstorage and store, push to /
-      
       this.$store.dispatch('signout')
-      .then(function(){
-        _this.$router.push('/')
-      })
+        .then(() => {
+          _this.$router.push('/')
+        })
     }
   },
   computed: {
@@ -114,13 +113,13 @@ a:hover {
 }
 
 nav {
-  margin-bottom: 1em;
+  margin-bottom: 0;
   background: $altbg;
   border-bottom: 1px solid $border;
 
   .nav-item {
     text-align: center;
-    
+
     .active {
       font-weight: bold;
     }

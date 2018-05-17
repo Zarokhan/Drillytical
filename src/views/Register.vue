@@ -128,62 +128,62 @@ export default {
   name: 'register',
   components: {
   },
-  data: function() {
+  data: () => {
     return {
-        form: {
-            Email: "",
-            FirstName: "",
-            LastName: "",
-            UserName: "",
-            Password: "",
-            Country: ""
-        },
-        validatePW: "",
-        checked: false,
-        countries: [
-            { text: '-- Select a country --', value: "" }
-        ],
-        info: {
-            type: "warning",
-            msg: ""
-        },
-        terms: null
+      form: {
+        Email: '',
+        FirstName: '',
+        LastName: '',
+        UserName: '',
+        Password: '',
+        Country: ''
+      },
+      validatePW: '',
+      checked: false,
+      countries: [
+        { text: '-- Select a country --', value: '' }
+      ],
+      info: {
+        type: 'warning',
+        msg: ''
+      },
+      terms: null
     }
   },
   methods: {
-    toggleTerms: function() {
-        /* eslint-disable */
-        terms.classList.toggle('m-fadeIn')
-        terms.classList.toggle('m-fadeOut')
-        /* eslint-enable */
+    toggleTerms: () => {
+      /* eslint-disable */
+      terms.classList.toggle('m-fadeIn')
+      terms.classList.toggle('m-fadeOut')
+      /* eslint-enable */
     },
-    onSubmit: function(event) {
-        event.preventDefault();
-        if (this.checked.length == 0) {
-            this.info.msg = 'Need to accept terms and conditions to register an account.'
-        }
-        if (this.form.Password != this.validatePW) {
-            this.info.msg = 'Password fields don\'t match.'
-        }
-        let _this = this
-        myaxios.post('/api/applicants', this.form, this.$store.getters.getAuthConfig)
-        .then(function(){
-            _this.$router.push('/')
+    onSubmit: function (event) {
+      event.preventDefault()
+      if (this.checked.length === 0) {
+        this.info.msg = 'Need to accept terms and conditions to register an account.'
+      }
+      if (this.form.Password !== this.validatePW) {
+        this.info.msg = 'Password fields don\'t match.'
+      }
+      let _this = this
+      myaxios.post('/api/applicants', this.form, this.$store.getters.getAuthConfig)
+        .then(() => {
+          _this.$router.push('/')
         })
-        .catch(function(){
-            _this.info.msg = 'Something went wrong. Maybe username was already taken.'
+        .catch(() => {
+          _this.info.msg = 'Something went wrong. Maybe username was already taken.'
         })
     }
   },
-  created: function() {
+  created () {
     const _this = this
     axios.get('https://restcountries.eu/rest/v2/all')
-    .then((response) => {
+      .then((response) => {
         const data = response.data
         data.forEach(element => {
-            _this.countries.push(element.name)
-        });
-    })
+          _this.countries.push(element.name)
+        })
+      })
   }
 }
 </script>

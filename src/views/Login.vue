@@ -25,75 +25,75 @@
 </template>
 
 <script>
-import spinner from "../components/Spinner.vue"
-import env from "../env"
+import spinner from '../components/Spinner.vue'
+import env from '../env'
 export default {
   name: 'login',
   components: {
-      spinner
+    spinner
   },
-  data: function() {
-      return {
-          user: "",
-          pass: "",
-          remember: localStorage.getItem("remember") !== null ? localStorage.getItem("remember") : false,
-          alertType: "secondary",
-          alertMsg: "",
-          loading: false
-      }
+  data: () => {
+    return {
+      user: '',
+      pass: '',
+      remember: localStorage.getItem('remember') !== null ? localStorage.getItem('remember') : false,
+      alertType: 'secondary',
+      alertMsg: '',
+      loading: false
+    }
   },
   methods: {
-    register: function(event) {
-        event.preventDefault()
-        this.$router.push('/register')
+    register: function (event) {
+      event.preventDefault()
+      this.$router.push('/register')
     },
-    login: function(event) {
-        event.preventDefault()
-        let _this = this;
-        this.loading = true
-        this.$store.dispatch('authenticate', {
-            username: this.user,
-            password: this.pass
+    login: function (event) {
+      event.preventDefault()
+      let _this = this
+      this.loading = true
+      this.$store.dispatch('authenticate', {
+        username: this.user,
+        password: this.pass
+      })
+        .then(() => {
+          // Authentication successful
+          // check remembered
+          if (_this.remember) {
+            // save 'token' in localstorage
+            localStorage.setItem('remember', true)
+            localStorage.setItem('user', _this.user)
+            localStorage.setItem('pass', _this.pass)
+          }
+          _this.loading = false
+          _this.$router.push('/workoutoverview')
         })
-        .then(function(){
-            // Authentication successful
-            // check remembered
-            if (_this.remember) {
-                // save 'token' in localstorage
-                localStorage.setItem("remember", true)
-                localStorage.setItem("user", _this.user)
-                localStorage.setItem("pass", _this.pass)
-            }
-            _this.loading = false
-            _this.$router.push('/workout')
-        })
-        .catch(function(){
-            // Authentication failed
-            _this.loading = false
-            // show error message
-            _this.alertType = "secondary"
-            _this.alertMsg = "False credentials, try again..."
+        .catch(() => {
+          // Authentication failed
+          _this.loading = false
+          // show error message
+          _this.alertType = 'secondary'
+          _this.alertMsg = 'False credentials, try again...'
         })
     }
   },
-  created(){
+  created () {
     // DEV USER
     if (env.IS_DEV()) {
-        this.user = "Stretch"
-        this.pass = "stretch"
+      this.user = 'Stretch'
+      this.pass = 'stretch'
     }
     // Authenticate user
     let _this = this
     this.loading = true
     this.$store.dispatch('authorize')
-    .then(function(){
+      .then(() => {
         _this.loading = false
-        _this.$router.push('/workout')
-    })
-    .catch(function() {
+        _this.$router.push('/workoutoverview')
+      })
+      .catch(() => {
         _this.loading = false
         _this.$router.push('/')
-    })
+      })
   }
 }
 </script>
@@ -117,7 +117,6 @@ export default {
         border: 1px solid $secondary-outline-border;
     }
 }
-
 
 form {
     input {

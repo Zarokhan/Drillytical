@@ -11,7 +11,7 @@ export default {
   name: 'spinner',
   methods: {
   },
-  created() {
+  created () {
   }
 }
 </script>
